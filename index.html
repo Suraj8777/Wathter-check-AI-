@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AtmosPro - Premium Weather Intelligence</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #2A2F3D;
+            --accent: #00E0C7;
+            --gold: #FFD700;
+            --glass: rgba(255,255,255,0.05);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background: var(--primary);
+            color: #fff;
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 4rem;
+            position: relative;
+        }
+
+        .header h1 {
+            font-size: 3.5rem;
+            background: linear-gradient(45deg, var(--accent), var(--gold));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -2px;
+        }
+
+        .search-container {
+            max-width: 800px;
+            margin: 3rem auto;
+            position: relative;
+        }
+
+        .search-box {
+            display: flex;
+            gap: 1rem;
+            background: var(--glass);
+            backdrop-filter: blur(20px);
+            border-radius: 15px;
+            padding: 0.5rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        #cityInput {
+            flex: 1;
+            padding: 1.5rem;
+            background: none;
+            border: none;
+            color: #fff;
+            font-size: 1.1rem;
+            padding-left: 3rem;
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 25px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--accent);
+        }
+
+        #searchBtn {
+            padding: 1.2rem 3rem;
+            background: linear-gradient(135deg, var(--accent), #009688);
+            border: none;
+            border-radius: 12px;
+            color: #fff;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+
+        #searchBtn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,224,199,0.3);
+        }
+
+        .weather-dashboard {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .main-card {
+            background: var(--glass);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 3rem;
+            position: relative;
+            overflow: hidden;
+            min-height: 400px;
+        }
+
+        .weather-highlights {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 2rem;
+        }
+
+        .highlight-card {
+            background: var(--glass);
+            padding: 2rem;
+            border-radius: 15px;
+            border: 1px solid rgba(255,255,255,0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .highlight-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .temp-display {
+            font-size: 5rem;
+            font-weight: 300;
+            background: linear-gradient(135deg, #fff, var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin: 2rem 0;
+        }
+
+        .weather-graph {
+            height: 200px;
+            background: var(--glass);
+            border-radius: 15px;
+            margin-top: 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--accent);
+        }
+
+        .forecast-container {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+            overflow-x: auto;
+            padding-bottom: 1rem;
+        }
+
+        .forecast-card {
+            min-width: 150px;
+            padding: 1.5rem;
+            background: var(--glass);
+            border-radius: 12px;
+            text-align: center;
+        }
+
+        .dynamic-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-size: cover;
+            background-position: center;
+            z-index: 0;
+            opacity: 0.3;
+        }
+    </style>
+</head>
+<body>
+    <div class="dynamic-bg" id="dynamicBg"></div>
+    <div class="container">
+        <header class="header">
+            <h1>AtmosPro</h1>
+            <p>Premium Atmospheric Intelligence Suite</p>
+        </header>
+
+        <div class="search-container">
+            <div class="search-box">
+                <i class="fas fa-search search-icon"></i>
+                <input type="text" id="cityInput" placeholder="Enter city or coordinates...">
+                <button id="searchBtn">
+                    <i class="fas fa-satellite"></i>
+                    Analyze
+                </button>
+            </div>
+        </div>
+
+        <div class="weather-dashboard" id="dashboard">
+            <div class="main-card">
+                <div class="weather-header">
+                    <h2 id="cityName">New York City, US</h2>
+                    <div class="temp-display"><span id="temperature">22</span>°C</div>
+                </div>
+                <div class="weather-highlights">
+                    <div class="highlight-card">
+                        <h3><i class="fas fa-tint"></i> Humidity</h3>
+                        <p class="value" id="humidity">65%</p>
+                    </div>
+                    <div class="highlight-card">
+                        <h3><i class="fas fa-wind"></i> Wind</h3>
+                        <p class="value" id="windSpeed">5.2 m/s</p>
+                    </div>
+                    <div class="highlight-card">
+                        <h3><i class="fas fa-eye"></i> Visibility</h3>
+                        <p class="value" id="visibility">10 km</p>
+                    </div>
+                    <div class="highlight-card">
+                        <h3><i class="fas fa-thermometer-half"></i> Feels Like</h3>
+                        <p class="value" id="feelsLike">24°C</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="main-card">
+                <h2>Advanced Metrics</h2>
+                <div class="weather-graph">
+                    <i class="fas fa-chart-line fa-3x"></i>
+                </div>
+                <div class="forecast-container">
+                    <!-- Forecast cards will be dynamically added here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_KEY = 'a5caf05ac5bff33416c4fafb3d168ae1';
+        
+        async function getWeatherData(city) {
+            try {
+                const response = await fetch(
+                    `https://api.openweathermap.org/data/2.5/weather?q=${city}&units=metric&appid=${API_KEY}`
+                );
+                
+                if (!response.ok) throw new Error('City not found');
+                
+                const data = await response.json();
+                updateDashboard(data);
+                updateBackground(data);
+            } catch (error) {
+                showError();
+            }
+        }
+
+        function updateDashboard(data) {
+            document.getElementById('cityName').textContent = `${data.name}, ${data.sys.country}`;
+            document.getElementById('temperature').textContent = Math.round(data.main.temp);
+            document.getElementById('humidity').textContent = `${data.main.humidity}%`;
+            document.getElementById('windSpeed').textContent = `${data.wind.speed} m/s`;
+            document.getElementById('visibility').textContent = `${(data.visibility / 1000).toFixed(1)} km`;
+            document.getElementById('feelsLike').textContent = `${Math.round(data.main.feels_like)}°C`;
+        }
+
+        function updateBackground(data) {
+            const weatherCode = data.weather[0].id;
+            const isDay = (data.dt > data.sys.sunrise && data.dt < data.sys.sunset);
+            const bgElement = document.getElementById('dynamicBg');
+            
+            let query = '';
+            if (weatherCode >= 200 && weatherCode < 600) query = 'storm';
+            else if (weatherCode >= 600 && weatherCode < 700) query = 'snow';
+            else if (weatherCode === 800) query = isDay ? 'sunny' : 'night-sky';
+            else query = 'weather';
+
+            bgElement.style.backgroundImage = `url(https://source.unsplash.com/1920x1080/?${query})`;
+        }
+
+        document.getElementById('searchBtn').addEventListener('click', () => {
+            const city = document.getElementById('cityInput').value;
+            if (city) getWeatherData(city);
+        });
+
+        document.getElementById('cityInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') document.getElementById('searchBtn').click();
+        });
+    </script>
+</body>
+</html>
